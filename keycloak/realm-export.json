@@ -1,0 +1,62 @@
+{
+  "realm": "buscador-empleo",
+  "enabled": true,
+  "accessTokenLifespan": 900,
+  "ssoSessionIdleTimeout": 1800,
+  "roles": {
+    "realm": [
+      { "name": "job_searcher", "description": "Puede ejecutar busquedas de empleo" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "buscador-empleo-backend",
+      "enabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "bearerOnly": true,
+      "description": "Resource server: solo valida tokens, no emite logins"
+    },
+    {
+      "clientId": "buscador-empleo-frontend",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["http://localhost:3000/*"],
+      "webOrigins": ["http://localhost:3000"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "description": "Cliente publico para el frontend Next.js (Authorization Code + PKCE)",
+      "protocolMappers": [
+        {
+          "name": "audience-backend",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "buscador-empleo-backend",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "arturo",
+      "enabled": true,
+      "email": "amedinas@gmail.com",
+      "credentials": [
+        { "type": "password", "value": "changeme", "temporary": true }
+      ],
+      "realmRoles": ["job_searcher"]
+    }
+  ]
+}
